@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
-
+import axios from '../apis/axios'
+import { ADD_BOOK } from '../apis/apiRoutes';
 const AddBookForm = ({ addBook, importBooks }) => {
   const [activeTab, setActiveTab] = useState('form');
+  const [loading, setLoading] = useState(false);
   const [book, setBook] = useState({
     title: '',
     author: '',
@@ -17,23 +19,85 @@ const AddBookForm = ({ addBook, importBooks }) => {
     setBook({ ...book, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addBook(book);
-    setBook({ title: '', author: '', year: '', genre: '', description: '' });
+    
+    if (Object.values(book).some((value) => value === "")) {
+      alert("All fields are required");
+      return;
+    }
+
+    // Wrap the book object in an array
+    const bookPayload = [book];
+    console.log(bookPayload)
+
+    try {
+        setLoading(true)
+      const response = await axios.post(ADD_BOOK, {
+        payload: bookPayload,
+      });
+      console.log("book response",response)
+      if(response.data.success){
+        setLoading(false)
+        alert(response.data.message)
+        setBook({ title: '', author: '', year: '', genre: '', description: '' }); 
+      }
+      else{
+        setLoading(false)
+
+        alert(response.data.message)
+      }
+
+    //   const data = await response.json();
+
+    //   if (response.ok) {
+    //     console.log('Book added successfully:', data);
+    //     addBook(bookPayload); 
+    //     setBook({ title: '', author: '', year: '', genre: '', description: '' }); // Reset form
+    //   } else {
+    //     // Handle error response
+    //     alert(data.message || 'Error adding book');
+    //   }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while adding the book.');
+    }
   };
+ const handleSubmitByCSV = async (bookPayload)=>{
+    try{
+
+        setLoading(true)
+        const response = await axios.post(ADD_BOOK, {
+          payload: bookPayload,
+        });
+        console.log("book response",response)
+        if(response.data.success){
+          setLoading(false)
+          alert(response.data.message)
+        }
+        else{
+          setLoading(false)
+    
+          alert(response.data.message)
+        }
+    }
+     catch(e){
+        alert('An error occurred while adding the book.');
+     }
+
+ }
 
   const handleFileChange = (e) => {
     setCsvFile(e.target.files[0]);
   };
 
-  const handleCSVUpload = () => {
+  const handleCSVUpload = async(e) => {
     if (csvFile) {
       Papa.parse(csvFile, {
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
-          const books = results.data.map((book, index) => ({
+        const books = results.data.map((book, index) => ({
             id: index + 1,
             title: book.Title,
             author: book.Author,
@@ -41,23 +105,23 @@ const AddBookForm = ({ addBook, importBooks }) => {
             genre: book.Genre,
             description: book.Description,
           }));
-          importBooks(books);
+        console.log("book",books)
+        handleSubmitByCSV(books)
         },
         error: (error) => {
           console.error('Error parsing CSV:', error);
         }
       });
     }
+    else{
+        alert('Please upload correct file') 
+    }
   };
 
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover');
   };
 
   const handleDrop = (e) => {
@@ -65,7 +129,6 @@ const AddBookForm = ({ addBook, importBooks }) => {
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        console.log("csv file",e.dataTransfer.files[0])
       setCsvFile(e.dataTransfer.files[0]);
     }
   };
@@ -148,7 +211,7 @@ const AddBookForm = ({ addBook, importBooks }) => {
               />
             </div>
             <button type="submit" className="bg-blue-400 text-white p-2 rounded-lg hover:bg-blue-600">
-              Add Book
+            {loading? 'Please wait...' : 'Add Book'}
             </button>
           </form>
         )}
@@ -165,7 +228,7 @@ const AddBookForm = ({ addBook, importBooks }) => {
                 className={`border-2 border-dashed p-8 rounded-lg text-center transition-all duration-300 ${dragActive ? 'border-custom-blue bg-blue-50' : 'border-gray-300'}`}
               >
                 <p className="text-gray-700 mb-2">Drag & Drop your CSV file here, or</p>
-                <label className="cursor-pointer bg-blue-400 text-white px-4 py-2 rounded-lg inline-block bg-blue-600 transition-colors">
+                <label className="cursor-pointer bg-blue-400 text-white px-4 py-2 rounded-lg inline-block hover:bg-blue-600 transition-colors">
                   Browse File
                   <input
                     type="file"

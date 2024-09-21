@@ -8,11 +8,9 @@ ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, LineElement
 const Dashboard = ({ books }) => {
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  // Example data mappings for bar chart
   const booksReadPerMonth = [3, 5, 2, 7, 10, 6, 4, 12, 9, 7, 8, 6];
   const pagesReadPerMonth = [1000, 1500, 800, 2500, 3500, 2000, 1400, 3800, 3000, 2400, 2100, 1800];
 
-  // Line Chart for Mood Distribution
   const moodsData = useMemo(() => ({
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     datasets: [
@@ -105,22 +103,18 @@ const Dashboard = ({ books }) => {
     <div className="dashboard-container flex flex-col justify-center items-center min-h-screen bg-gray-100 p-8">
       <h1 className="text-4xl font-bold text-custom-blue mb-8">Book Collection Dashboard</h1>
 
-      {/* Non-Scrollable Dashboard Container with Fixed Layout */}
       <div className="w-full grid grid-cols-2 gap-8">
         
-        {/* Books and Pages Read Section */}
         <div className="bg-white p-6 rounded-lg shadow-lg h-[400px]">
           <h2 className="text-2xl font-bold mb-4 text-center">Books and Pages Read per Month</h2>
           <Bar data={barData} options={{ responsive: true, maintainAspectRatio: false }} />
         </div>
 
-        {/* Read Status Section */}
         <div className="bg-white p-6 rounded-lg shadow-lg h-[400px]">
           <h2 className="text-2xl font-bold mb-4 text-center">Read Status</h2>
           <Bar data={readStatusData} options={{ responsive: true, maintainAspectRatio: false }} />
         </div>
 
-        {/* Combined Moods and Reading Pace Section */}
         <div className="bg-white p-6 rounded-lg shadow-lg h-[500px] col-span-2">
           <h2 className="text-2xl font-bold mb-4 text-center">Moods & Reading Pace</h2>
           <div className="flex justify-around h-[300px]">
