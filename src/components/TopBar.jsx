@@ -18,7 +18,7 @@ const NavBar = ({ userName }) => {
         </a>
         <span className="mx-4 font-semibold">{userName}</span>
         <div onClick={logOut}>
-        <button className="flex items-center mx-4 hover:text-yellow-300">
+        <button className="flex items-center mx-4 hover:text-gray-300">
           {/* <div className='h-4 w-4'> */}
 
           <img src="./logout.svg" alt="" />
