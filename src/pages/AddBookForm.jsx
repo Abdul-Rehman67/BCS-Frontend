@@ -181,7 +181,7 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
           onClick={() => setActiveTab('csv')}
           className={`p-2 rounded-t-lg w-1/2 ${activeTab === 'csv' ? 'bg-blue-400 text-white' : 'bg-gray-200'}`}
         >
-          Add Books by CSV
+          Add Book(s) by CSV
         </button>
       </div>
 
