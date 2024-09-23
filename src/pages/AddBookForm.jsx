@@ -107,7 +107,7 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
         complete: (results) => {
           // Check if the file is empty
           if (results.data.length === 0) {
-            alert('The CSV file is empty or in correct.');
+            alert('The CSV file is empty or incorrect.');
             setLoading(false);
             return;
           }
