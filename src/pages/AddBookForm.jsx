@@ -29,7 +29,6 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
       return;
     }
 
-    // Wrap the book object in an array
     const bookPayload = [book];
     console.log(bookPayload)
 
@@ -41,7 +40,7 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
       console.log("book response",response)
       if(response.data.success){
         setLoading(false)
-        setRefreshList(true)
+        setRefreshList(prev=>!prev)
         alert(response.data.message)
         setBook({ title: '', author: '', year: '', genre: '', description: '' }); 
       }
@@ -125,7 +124,6 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
             return;
           }
   
-          // Map valid books, ignoring extra columns
           const books = results.data.map((book, index) => ({
             id: index + 1,
             title: book.Title,
@@ -177,7 +175,7 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
           onClick={() => setActiveTab('form')}
           className={`p-2 rounded-t-lg w-1/2 ${activeTab === 'form' ? 'bg-blue-400 text-white' : 'bg-gray-200'}`}
         >
-          Add Book by Form
+          Add Book(s)
         </button>
         <button
           onClick={() => setActiveTab('csv')}

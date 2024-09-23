@@ -67,26 +67,28 @@ const BookList = ({ onDelete, onEdit,refreshlist }) => {
   };
 
   return (
-    <div className="p-4 bg-white shadow-md rounded-lg mt-10 h-[800px] overflow-y-scroll">
-      <h2 className="text-2xl font-bold text-custom-blue mb-6 text-center">My Book Collection</h2>
+    <>
+       <h2 className="text-2xl font-bold text-custom-blue mb-6 text-center mt-6">My Book Collection</h2>
 
-      {/* Search Bar */}
-      <div className="mb-4 flex justify-between">
-        <input
-          type="text"
-          placeholder="Search by title or author..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-2"
-        />
-        <button
-          onClick={exportToCSV}
-          disabled={books.length<1}
-          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-        >
-          Export as CSV
-        </button>
-      </div>
+{/* Search Bar */}
+<div className="mb-4 flex justify-between">
+  <input
+    type="text"
+    placeholder="Search by title or author..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="border border-gray-300 rounded-md px-3 py-2"
+  />
+  <button
+    onClick={exportToCSV}
+    disabled={books.length<1}
+    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+  >
+    Export as CSV
+  </button>
+</div>
+    <div className="p-4 bg-white shadow-md rounded-lg mt-10 h-[800px] overflow-y-scroll">
+   
 
       {filteredBooks.length === 0 ? (
         <p className="text-gray-500 text-center">{!loading ? 'No books available. Please add books to your collection.':'Please wait...'}</p>
@@ -105,7 +107,7 @@ const BookList = ({ onDelete, onEdit,refreshlist }) => {
                 <p className="text-sm text-gray-700 mb-1"><strong>Year:</strong> {book.year}</p>
                 <p className="text-sm text-gray-700 mb-1"><strong>Genre:</strong> {book.genre}</p>
                 <p className="text-sm text-gray-700 mb-1"><strong>Status:</strong> {book.status}</p>
-                <p className="text-sm text-gray-700 mb-1"><strong>Description:</strong> {book.description}</p>
+                <p className="text-sm text-gray-700 mb-1 h-16"><strong>Description:</strong> {book.description}</p>
               </div>
 
               <div className="flex justify-end space-x-2 mb-2">
@@ -138,9 +140,9 @@ const BookList = ({ onDelete, onEdit,refreshlist }) => {
     setEditBook(null); // Close modal
   }}
   onEdit={(updatedBook) => {
-    // Call the parent onEdit function to refresh the list
-    getBookByUser(); // Ensure this is called to refresh the book list after edit
-    setEditBook(null); // Clear the current editBook state
+    
+    getBookByUser(); 
+    setEditBook(null); 
   }}
 />
 
@@ -150,15 +152,16 @@ const BookList = ({ onDelete, onEdit,refreshlist }) => {
   book={bookToDelete}
   onClose={() => setBookToDelete(null)}  // Close the modal
   onDelete={(bookId) => {
-    // This will be called after the book is successfully deleted
+    
     console.log(`Deleted book with ID: ${bookId}`);
-    // You can refresh your book list here
-    getBookByUser();  // Assuming this is the function that fetches all books
-    setBookToDelete(null);  // Clear the bookToDelete state
+   
+    getBookByUser();  
+    setBookToDelete(null);  
   }}
 />
 
     </div>
+    </>
   );
 };
 

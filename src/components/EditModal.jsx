@@ -13,7 +13,6 @@ const EditBookModal = ({ isOpen, book, onClose, onEdit }) => {
     }
   }, [book]);
 
-  // Handle input changes and update local state
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedBook((prevBook) => ({

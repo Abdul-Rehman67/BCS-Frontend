@@ -62,7 +62,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-custom-light-blue">
+    <div className="bg-gray-50 min-h-screen bg-custom-light-blue">
       <TopBar />
       <div className="container mx-auto py-8">
         <AddBookForm addBook={addBook} importBooks={importBooks} />
