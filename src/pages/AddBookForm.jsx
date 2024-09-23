@@ -185,9 +185,7 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
         </button>
       </div>
 
-      {/* Container with fixed height */}
       <div className="min-h-[400px] flex flex-col justify-between">
-        {/* Form to Add Book */}
         {activeTab === 'form' && (
           <form onSubmit={handleSubmit} className="flex-1">
             <div className="mb-4">
@@ -250,7 +248,6 @@ const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
           </form>
         )}
 
-        {/* Fancy CSV Upload */}
         {activeTab === 'csv' && (
           <div className="flex-1">
             <div className="mb-4">

@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import axios from '../apis/axios';  // Assuming this is where DELETE_BOOK is coming from
-import { DELETE_BOOK } from '../apis/apiRoutes';  // Import your DELETE_BOOK API route
+import axios from '../apis/axios';  
+import { DELETE_BOOK } from '../apis/apiRoutes';  
 
 const DeleteBookModal = ({ isOpen, book, onClose, onDelete }) => {
   const [loading, setLoading] = useState(false);
 
-  // Renamed this function to avoid conflict with onDelete prop
   const handleDelete = async () => {
     try {
       setLoading(true);
-      const response = await axios.post(`${DELETE_BOOK}/${book._id}`);
+      const response = await axios.delete(`${DELETE_BOOK}/${book._id}`);
       console.log('book response', response);
 
       if (response.data.success) {
         alert(response.data.message);
-        onDelete(book._id); // Call the onDelete prop after successful deletion
+        onDelete(book._id); 
         setLoading(false);
-        onClose(); // Close modal only after successful delete
+        onClose(); 
       } else {
         setLoading(false);
         alert(response.data.message);
@@ -55,9 +54,9 @@ const DeleteBookModal = ({ isOpen, book, onClose, onDelete }) => {
           Cancel
         </button>
         <button
-          onClick={handleDelete} // Use handleDelete here instead of onConfirm
+          onClick={handleDelete} 
           className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-          disabled={loading}  // Disable the button while loading
+          disabled={loading}  
         >
           {loading ? 'Deleting...' : 'Delete'}
         </button>
