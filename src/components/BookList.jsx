@@ -81,6 +81,7 @@ const BookList = ({ onDelete, onEdit,refreshlist }) => {
         />
         <button
           onClick={exportToCSV}
+          disabled={books.length<1}
           className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
         >
           Export as CSV
@@ -103,7 +104,8 @@ const BookList = ({ onDelete, onEdit,refreshlist }) => {
                 <p className="text-sm text-gray-700 mb-1"><strong>Author:</strong> {book.author}</p>
                 <p className="text-sm text-gray-700 mb-1"><strong>Year:</strong> {book.year}</p>
                 <p className="text-sm text-gray-700 mb-1"><strong>Genre:</strong> {book.genre}</p>
-                <div className="overflow-y-auto h-20">{book.description}</div>
+                <p className="text-sm text-gray-700 mb-1"><strong>Status:</strong> {book.status}</p>
+                <p className="text-sm text-gray-700 mb-1"><strong>Description:</strong> {book.description}</p>
               </div>
 
               <div className="flex justify-end space-x-2 mb-2">
@@ -143,15 +145,19 @@ const BookList = ({ onDelete, onEdit,refreshlist }) => {
 />
 
 
-      <DeleteBookModal
-        isOpen={!!bookToDelete}
-        book={bookToDelete}
-        onClose={() => setBookToDelete(null)}
-        onConfirm={() => {
-          onDelete(bookToDelete.id);
-          setBookToDelete(null);
-        }}
-      />
+<DeleteBookModal
+  isOpen={!!bookToDelete}
+  book={bookToDelete}
+  onClose={() => setBookToDelete(null)}  // Close the modal
+  onDelete={(bookId) => {
+    // This will be called after the book is successfully deleted
+    console.log(`Deleted book with ID: ${bookId}`);
+    // You can refresh your book list here
+    getBookByUser();  // Assuming this is the function that fetches all books
+    setBookToDelete(null);  // Clear the bookToDelete state
+  }}
+/>
+
     </div>
   );
 };

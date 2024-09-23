@@ -66,7 +66,7 @@ const Dashboard = () => {
       <TopBar />
       <div className="container mx-auto py-8">
         <AddBookForm addBook={addBook} importBooks={importBooks} />
-        <BookList books={books} />
+        {/* <BookList /> */}
       </div>
     </div>
   );

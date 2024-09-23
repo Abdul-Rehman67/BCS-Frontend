@@ -1,10 +1,10 @@
 import { React, useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { LOG_IN } from "../apis/apiRoutes";
+import { CREATE_ACCOUNT, LOG_IN } from "../apis/apiRoutes";
 import axios from '../apis/axios'
 
-const Login = () => {
+const CreateAccount = () => {
   const [formData, setFormData] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -14,17 +14,22 @@ const Login = () => {
     console.log(formData);
     if (
       Object.keys(formData).some((key) => formData[key] === "") ||
-      Object.keys(formData).length < 2
+      Object.keys(formData).length < 3
     ) {
       alert("all fields are required");
-    } else {
+    }
+    if(formData.password !== formData.confirmpassword){
+        alert("Password mismatched!");
+    } 
+    else {
       try {
         setLoading(true)
-        const response = await axios.post(LOG_IN, formData);
+        const response = await axios.post(CREATE_ACCOUNT, formData);
         if (response.data.success) {
           setLoading(false)
-          navigate("/");
-          localStorage.setItem('isAuthenticated', response?.data?.payload?.token)
+          alert("Account created successfully!")
+          navigate("/login");
+        //   localStorage.setItem('isAuthenticated', response?.data?.payload?.token)
           localStorage.setItem('id', response?.data?.payload?.user?._id)
         } else {
           setLoading(false)
@@ -54,7 +59,7 @@ const Login = () => {
       <div className="bg-gray-200 min-h-screen flex flex-col">
         <div className="container md:w-5/12 w-full mx-auto flex-1 flex flex-col items-center justify-center px-2">
           <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-            <h1 className="mb-8 text-3xl text-center">Login</h1>
+            <h1 className="mb-8 text-3xl text-center">Create Account</h1>
             <form onSubmit={handleSubmit}>
               <input
                 type="text"
@@ -72,15 +77,23 @@ const Login = () => {
                 onChange={handleChange}
 
               />
+              <input
+                type="password"
+                className="block border border-grey-light w-full p-3 rounded mb-4"
+                name="confirmpassword"
+                placeholder="Confirm Password"
+                onChange={handleChange}
+
+              />
 
               <button
                 type="submit"
                 className="mt-2 w-full text-center py-3 rounded bg-blue-400 text-white hover:bg-blue-500 focus:outline-none my-1"
                 onClick={handleSubmit}
               >
-                {!loading ? ' Login' : 'Please wait...'}
+                {!loading ? ' Create Account' : 'Please wait...'}
               </button>
-              <a href="/createaccount" className="mt-2 text-blue-600">Create an account</a>
+              <a href="/login" className="mt-2 text-blue-600">Already have an account? Login</a>
             </form>
 
 
@@ -92,4 +105,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default CreateAccount;

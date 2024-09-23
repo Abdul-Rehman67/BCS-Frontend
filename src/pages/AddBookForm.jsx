@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Papa from 'papaparse';
 import axios from '../apis/axios'
 import { ADD_BOOK } from '../apis/apiRoutes';
-const AddBookForm = ({ addBook, importBooks }) => {
+import BookList from '../components/BookList';
+const AddBookForm = ({ addBook, importBooks,fetchBooks }) => {
   const [activeTab, setActiveTab] = useState('form');
   const [loading, setLoading] = useState(false);
   const [book, setBook] = useState({
@@ -14,6 +15,7 @@ const AddBookForm = ({ addBook, importBooks }) => {
   });
   const [csvFile, setCsvFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const [refreshList, setRefreshList] = useState(false);
 
   const handleChange = (e) => {
     setBook({ ...book, [e.target.name]: e.target.value });
@@ -39,11 +41,13 @@ const AddBookForm = ({ addBook, importBooks }) => {
       console.log("book response",response)
       if(response.data.success){
         setLoading(false)
+        setRefreshList(true)
         alert(response.data.message)
         setBook({ title: '', author: '', year: '', genre: '', description: '' }); 
       }
       else{
         setLoading(false)
+        
 
         alert(response.data.message)
       }
@@ -60,6 +64,8 @@ const AddBookForm = ({ addBook, importBooks }) => {
     //   }
     } catch (error) {
       console.error('Error:', error);
+      setLoading(false)
+
       alert('An error occurred while adding the book.');
     }
   };
@@ -72,17 +78,20 @@ const AddBookForm = ({ addBook, importBooks }) => {
         });
         console.log("book response",response)
         if(response.data.success){
+          setRefreshList(prev => !prev);
           setLoading(false)
           alert(response.data.message)
         }
         else{
           setLoading(false)
-    
+          setRefreshList(true)
           alert(response.data.message)
         }
     }
      catch(e){
+        setLoading(false)
         alert('An error occurred while adding the book.');
+        
      }
 
  }
@@ -91,13 +100,33 @@ const AddBookForm = ({ addBook, importBooks }) => {
     setCsvFile(e.target.files[0]);
   };
 
-  const handleCSVUpload = async(e) => {
+  const handleCSVUpload = async (e) => {
     if (csvFile) {
       Papa.parse(csvFile, {
         header: true,
         skipEmptyLines: true,
         complete: (results) => {
-        const books = results.data.map((book, index) => ({
+          // Check if the file is empty
+          if (results.data.length === 0) {
+            alert('The CSV file is empty or in correct.');
+            setLoading(false);
+            return;
+          }
+  
+          const requiredColumns = ['Title', 'Author', 'Year', 'Genre', 'Description'];
+  
+          const headers = results.meta.fields;
+          console.log("headers",headers)
+          const missingColumns = requiredColumns.filter(col => !headers.includes(col));
+  
+          if (missingColumns.length > 0) {
+            alert(`The following required columns are missing: ${missingColumns.join(', ')}`);
+            setLoading(false);
+            return;
+          }
+  
+          // Map valid books, ignoring extra columns
+          const books = results.data.map((book, index) => ({
             id: index + 1,
             title: book.Title,
             author: book.Author,
@@ -105,18 +134,24 @@ const AddBookForm = ({ addBook, importBooks }) => {
             genre: book.Genre,
             description: book.Description,
           }));
-        console.log("book",books)
-        handleSubmitByCSV(books)
+  
+          console.log("Parsed books", books);
+  
+          // Send the valid book data for submission
+          handleSubmitByCSV(books);
         },
         error: (error) => {
           console.error('Error parsing CSV:', error);
+          alert('An error occurred while parsing the CSV file.');
+          setLoading(false);
         }
       });
-    }
-    else{
-        alert('Please upload correct file') 
+    } else {
+      alert('Please upload a valid CSV file');
+      setLoading(false);
     }
   };
+  
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -134,6 +169,7 @@ const AddBookForm = ({ addBook, importBooks }) => {
   };
 
   return (
+    <>
     <div className="p-4 bg-white shadow-md rounded-lg">
       {/* Tabs for switching between Form and CSV upload */}
       <div className="flex mb-4">
@@ -250,6 +286,8 @@ const AddBookForm = ({ addBook, importBooks }) => {
         )}
       </div>
     </div>
+    <BookList refreshlist={refreshList} />    
+    </>
   );
 };
 
