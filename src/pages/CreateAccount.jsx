@@ -12,15 +12,24 @@ const CreateAccount = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     console.log(formData);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (
       Object.keys(formData).some((key) => formData[key] === "") ||
       Object.keys(formData).length < 3
     ) {
       alert("all fields are required");
+      return
     }
     if(formData.password !== formData.confirmpassword){
         alert("Password mismatched!");
+        return 
     } 
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address");
+      return;
+    }
+    
     else {
       try {
         setLoading(true)
