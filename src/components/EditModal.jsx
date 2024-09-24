@@ -68,8 +68,9 @@ const EditBookModal = ({ isOpen, book, onClose, onEdit }) => {
             name="title"
             placeholder="Title"
             value={editedBook.title}
+            disabled={true}
             onChange={handleInputChange}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 mb-4 bg-gray-200"
           />
           <input
             type="text"
